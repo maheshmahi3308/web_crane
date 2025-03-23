@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanical Marvels - Predictive Maintenance</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        /* Background Animation */
+        @keyframes gradientBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Home Page Styles */
+        #homePage {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            background: linear-gradient(270deg, #1e3c72, #2a5298, #1e3c72);
+            background-size: 200% 200%;
+            animation: gradientBackground 10s ease infinite;
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            animation: fadeIn 2s ease-in-out;
+        }
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            animation: fadeIn 3s ease-in-out;
+        }
+        .btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #218838;
+            transform: scale(1.1);
+        }
+
+        /* Dashboard Styles */
+        #dashboardPage {
+            display: none; /* Hidden by default */
+            height: 100vh; /* Fit within viewport */
+            padding: 20px;
+            background: linear-gradient(270deg, #4b6cb7, #182848, #4b6cb7);
+            background-size: 200% 200%;
+            animation: gradientBackground 10s ease infinite;
+            color: white;
+            overflow-y: auto; /* Allow scrolling only if content exceeds height */
+        }
+        .data-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .data-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+            width: 200px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .data-box:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .data-title {
+            font-weight: bold;
+            color: #fff;
+            font-size: 1.2rem; /* Larger font size */
+        }
+        .data-value {
+            font-size: 28px; /* Larger font size */
+            font-weight: bold;
+            color: #fff;
+            margin: 10px 0;
+        }
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Home Page -->
+    <div id="homePage">
+        <div class="container">
+            <h1>Mechanical Marvels</h1>
+            <p>
+                <strong>Problem:</strong> Predictive Maintenance of Crane Operations<br><br>
+                Our solution focuses on real-time monitoring and predictive maintenance of crane operations using IoT sensors and data analytics. By analyzing parameters like oil level, temperature, gyroscope data, and current, we ensure optimal performance and prevent unexpected failures.
+            </p>
+            <button class="btn" onclick="showDashboard()">Get Started</button>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage">
+        <h2>Real-Time Sensor Data</h2>
+        <!-- First Row: Three Parameters -->
+        <div class="data-container">
+            <div class="data-box" id="oilBox" onclick="showOilDetails()">
+                <p class="data-title">Oil Level</p>
+                <p class="data-value" id="oilLevel">Loading...</p>
+                <div id="oilDetails" style="display:none;">
+                    <p>Oil Parameter 1: <span id="oilParam1">N/A</span></p>
+                    <p>Oil Parameter 2: <span id="oilParam2">N/A</span></p>
+                </div>
+            </div>
+            <div class="data-box" id="temperatureBox">
+                <p class="data-title">Temperature</p>
+                <p class="data-value" id="temperature">Loading...</p>
+            </div>
+            <div class="data-box" id="ropeBox" onclick="openRopeDetails()">
+                <p class="data-title">Rope Cable Prediction</p>
+                <p class="data-value">Stable</p>
+            </div>
+        </div>
+
+        <!-- Second Row: Two Parameters -->
+        <div class="data-container">
+            <div class="data-box" id="gyroBox">
+                <p class="data-title">Gyroscope Data</p>
+                <p>Gyro X: <span id="gyroX">Loading...</span></p>
+                <p>Gyro Y: <span id="gyroY">Loading...</span></p>
+                <p>Gyro Z: <span id="gyroZ">Loading...</span></p>
+            </div>
+            <div class="data-box" id="currentBox">
+                <p class="data-title">Current</p>
+                <p class="data-value" id="current">Loading...</p>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="chart-container">
+            <canvas id="temperatureChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="oilLevelChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="ropeChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="gyroChart"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Navigation Function
+        function showDashboard() {
+            document.getElementById("homePage").style.display = "none";
+            document.getElementById("dashboardPage").style.display = "block";
+        }
+
+        // Dashboard Functionality
+        const apiKey = "JILXVPKLMUFG8N2G";
+        const channelID = "2887938";
+        const url = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${apiKey}&results=1`;
+
+        // Initialize charts
+        const temperatureCtx = document.getElementById('temperatureChart').getContext('2d');
+        const oilLevelCtx = document.getElementById('oilLevelChart').getContext('2d');
+        const ropeCtx = document.getElementById('ropeChart').getContext('2d');
+        const gyroCtx = document.getElementById('gyroChart').getContext('2d');
+
+        const temperatureChart = new Chart(temperatureCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Temperature',
+                    data: [],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)',
+                        },
+                        ticks: {
+                            color: '#fff',
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)',
+                        },
+                        ticks: {
+                            color: '#fff',
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#fff',
+                        }
+                    }
+                }
+            }
+        });
+
+        const oilLevelChart = new Chart(oilLevelCtx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Oil Level',
+                    data: [],
+                    backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)',
+                        },
+                        ticks: {
+                            color: '#fff',
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)',
+                        },
+                        ticks: {
+                            color: '#fff',
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#fff',
+                        }
+                    }
+                }
+            }
+        });
+
+        const ropeChart = new Chart(ropeCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Rope Cable Prediction',
+                    data: [],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)',
+                        },
+                        ticks: {
+                            color: '#fff',
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)',
+                        },
+                        ticks: {
+                            color: '#fff',
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#fff',
+                        }
+                    }
+                }
+            }
+        });
+
+        const gyroChart = new Chart(gyroCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Gyro X',
+                        data: [],
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'Gyro Y',
+                        data: [],
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'Gyro Z',
+                        data: [],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)',
+                        },
+                        ticks: {
+                            color: '#fff',
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)',
+                        },
+                        ticks: {
+                            color: '#fff',
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#fff',
+                        }
+                    }
+                }
+            }
+        });
+
+        async function fetchData() {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.feeds.length > 0) {
+                    const latestEntry = data.feeds[0];
+                    let oilLevel = latestEntry.field1 || "N/A";
+                    let temperature = latestEntry.field2 || "N/A";
+                    let ropePrediction = 1; // Assuming rope stability is constant
+                    let gyroX = latestEntry.field4 || "N/A";
+                    let gyroY = latestEntry.field5 || "N/A";
+                    let gyroZ = latestEntry.field6 || "N/A";
+                    let current = latestEntry.field7 || "N/A";
+
+                    document.getElementById("oilLevel").textContent = oilLevel;
+                    document.getElementById("temperature").textContent = temperature;
+                    document.getElementById("gyroX").textContent = gyroX;
+                    document.getElementById("gyroY").textContent = gyroY;
+                    document.getElementById("gyroZ").textContent = gyroZ;
+                    document.getElementById("current").textContent = current;
+
+                    updateBoxColors(oilLevel, temperature);
+                    updateCharts(oilLevel, temperature, ropePrediction, gyroX, gyroY, gyroZ);
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        function updateBoxColors(oilLevel, temperature) {
+            const oilBox = document.getElementById("oilBox");
+            const temperatureBox = document.getElementById("temperatureBox");
+            const ropeBox = document.getElementById("ropeBox");
+            const gyroBox = document.getElementById("gyroBox");
+            const currentBox = document.getElementById("currentBox");
+
+            if (oilLevel > 10) {
+                oilBox.style.backgroundColor = "#28a745"; // Green
+            } else if (oilLevel >= 5 && oilLevel <= 10) {
+                oilBox.style.backgroundColor = "#ffc107"; // Yellow
+            } else if (oilLevel < 5) {
+                oilBox.style.backgroundColor = "#dc3545"; // Red
+            }
+
+            if (temperature > 40) {
+                temperatureBox.style.backgroundColor = "#dc3545"; // Red
+            } else if (temperature > 30) {
+                temperatureBox.style.backgroundColor = "#ffc107"; // Yellow
+            } else if (temperature > 20) {
+                temperatureBox.style.backgroundColor = "#28a745"; // Green
+            }
+
+            // Default colors for rope, gyro, and current
+            ropeBox.style.backgroundColor = "#17a2b8"; // Cyan
+            gyroBox.style.backgroundColor = "#6c757d"; // Gray
+            currentBox.style.backgroundColor = "#6610f2"; // Purple
+        }
+
+        function updateCharts(oilLevel, temperature, ropePrediction, gyroX, gyroY, gyroZ) {
+            const now = new Date().toLocaleTimeString();
+
+            // Update temperature chart
+            temperatureChart.data.labels.push(now);
+            temperatureChart.data.datasets[0].data.push(temperature);
+            if (temperatureChart.data.labels.length > 10) {
+                temperatureChart.data.labels.shift();
+                temperatureChart.data.datasets[0].data.shift();
+            }
+            temperatureChart.update();
+
+            // Update oil level chart
+            oilLevelChart.data.labels.push(now);
+            oilLevelChart.data.datasets[0].data.push(oilLevel);
+            if (oilLevelChart.data.labels.length > 10) {
+                oilLevelChart.data.labels.shift();
+                oilLevelChart.data.datasets[0].data.shift();
+            }
+            oilLevelChart.update();
+
+            // Update rope chart
+            ropeChart.data.labels.push(now);
+            ropeChart.data.datasets[0].data.push(ropePrediction);
+            if (ropeChart.data.labels.length > 10) {
+                ropeChart.data.labels.shift();
+                ropeChart.data.datasets[0].data.shift();
+            }
+            ropeChart.update();
+
+            // Update gyro chart
+            gyroChart.data.labels.push(now);
+            gyroChart.data.datasets[0].data.push(gyroX);
+            gyroChart.data.datasets[1].data.push(gyroY);
+            gyroChart.data.datasets[2].data.push(gyroZ);
+            if (gyroChart.data.labels.length > 10) {
+                gyroChart.data.labels.shift();
+                gyroChart.data.datasets[0].data.shift();
+                gyroChart.data.datasets[1].data.shift();
+                gyroChart.data.datasets[2].data.shift();
+            }
+            gyroChart.update();
+        }
+
+        function showOilDetails() {
+            const details = document.getElementById("oilDetails");
+            details.style.display = details.style.display === "none" ? "block" : "none";
+        }
+
+        function openRopeDetails() {
+            window.open("http://127.0.0.1:5000", "_blank");
+        }
+
+        fetchData();
+        setInterval(fetchData, 5000);
+    </script>
+</body>
+</html>
